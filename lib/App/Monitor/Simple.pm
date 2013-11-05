@@ -7,31 +7,27 @@ our $VERSION = '0.01';
 use base 'Exporter';
 our @EXPORT_OK = qw/run/;
 
-use Smart::Args;
-use AnyEvent;
 use IO::CaptureOutput qw/capture/;
 
 sub run {
-    args my $command   => { isa => 'Str' },
-         my $retry     => { isa => 'Int', default => 0, optional => 1},
-         my $interval  => { isa => 'Int', default => 5, optional => 1},
-         my $quiet     => { default => 0, optional => 1 };
+    my ($args) = @_;
 
-    my $cv = AnyEvent->condvar;
+    #
+    my $command  = delete $args->{command};
+    my $retry    = delete $args->{retry}    || 0;
+    my $interval = delete $args->{interval} || 5;
+    my $quiet    = delete $args->{quiet}    || 0;
+
     my $ret = -1;
     my $count = 0;
-    my $w; $w = AnyEvent->timer(
-        interval => $interval,
-        cb => sub {
-            $count++;
-            $ret = rsystem($command, $quiet);
-            if ($ret == 0 || $retry < $count) {
-                undef $w;
-                $cv->send;
-            }
+    while(1) {
+        $count++;
+        $ret = rsystem($command, $quiet);
+        if ($ret == 0 || $retry < $count) {
+            last;
         }
-    );
-    $cv->recv;
+        sleep $interval;
+    }
 
     if($count == 1 && $ret == 0) {
         # normal
