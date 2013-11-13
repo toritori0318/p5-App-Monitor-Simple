@@ -11,9 +11,11 @@ MANIFEST.bak
 *.old
 MANIFEST
 MYMETA.yml
+MYMETA.json
 
 /App-Monitor-Simple-*
 /.build
+/_build*
 /_build_params
 /Build
 /Build.bat
