@@ -9,7 +9,7 @@ use App::Monitor::Simple qw/run/;
 {
     my $ret = run(
         {
-            command     => 'ping -c 1 yahoo.com',
+            command     => q{ perl -e '' },
             quiet       => 1,
         }
     );
@@ -20,7 +20,7 @@ use App::Monitor::Simple qw/run/;
 {
     my $ret = run(
         {
-            command     => 'ping -c 1 blahhhhhhhhhhhhhhhhh.jp',
+            command     => q{ perl -e 'die "blah"' },
             quiet       => 1,
         }
     );
@@ -33,7 +33,7 @@ use App::Monitor::Simple qw/run/;
     my $st_time = time;
     my $ret = run(
         {
-            command     => 'ping -c 1 blahhhhhhhhhhhhhhhhh.jp',
+            command     => q{ perl -e 'die "blah"' },
             interval    => 5,
             retry       => 2,
             quiet       => 1,
